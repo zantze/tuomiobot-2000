@@ -6,11 +6,13 @@ const auth = require('../auth.json')
 const db = require('./db');
 
 const tbMessage = require('./models/message');
+const tbReaction = require('./models/reaction');
 
 const getMessage = (currentChannel, messageId) => {
+  console.log(`fetching ${messageId}`);
   currentChannel.fetchMessage(messageId).then( (message) => {
     currentChannel.send(`hmm... looks like some dumb shit posted by ${message.author.username}`);
-    console.log(message.reactions.first().users);
+    console.log(message);
   })
 }
 
@@ -18,14 +20,20 @@ const getReactions = (message) => {
   let reactions = [];
   message.reactions.array().forEach(reaction => {
     reactions.push({
-      reactionId: reaction._emoji.id,
-      reactionName: reaction._emoji.name,
-      reactionCount: reaction.count,
-      messageId: message.id,
+      emote_id: reaction._emoji.id,
+      emote_name: reaction._emoji.name,
+      count: reaction.count,
+      message: message.id,
     });
   })
 
   return reactions;
+}
+
+const insertReactions = (reactions) => {
+  reactions.forEach( reaction => {
+    tbReaction.methods.insertReaction(reaction);
+  });
 }
 
 const getMessages =  (currentChannel, channelId) => {
@@ -63,6 +71,11 @@ const fetchMessages = (channel, lastMessage, iteration) => {
         channel: message.channel.id,
         created: message.createdAt,
       });
+
+      const reactions = getReactions(message);
+      if (reactions.length > 0) {
+        insertReactions(reactions);
+      }
     });
 
     console.log(iteration, messageId);

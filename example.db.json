@@ -2,5 +2,6 @@
   "host": "host",
   "user": "username",
   "password": "password",
-  "database": "database"
+  "database": "database",
+  "charset": "utf8mb4"
 }
