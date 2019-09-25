@@ -1,6 +1,11 @@
 const Discord = require('discord.js');
+
 const client = new Discord.Client();
-const auth = require('./auth.json')
+const auth = require('../auth.json')
+
+const db = require('./db');
+
+const tbMessage = require('./models/message');
 
 const getMessage = (currentChannel, messageId) => {
   currentChannel.fetchMessage(messageId).then( (message) => {
@@ -51,7 +56,13 @@ const fetchMessages = (channel, lastMessage, iteration) => {
 
     messageId = messages.last().id;
     messages.array().forEach(message => {
-      console.log(message.content);
+      tbMessage.methods.insertMessage({
+        id: message.id,
+        message: message.content,
+        author: message.author.id,
+        channel: message.channel.id,
+        created: message.createdAt,
+      });
     });
 
     console.log(iteration, messageId);

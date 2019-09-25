@@ -1,3 +1,4 @@
 npm-debug.log.*
 auth.json
+db.json
 node_modules
