@@ -36,8 +36,10 @@ const insertReactions = (reactions) => {
   });
 }
 
-const getMessages = (currentChannel, channelId) => {
-  let channel = client.guilds.find( guild => guild.name === '... :3')
+const getMessages = (currentChannel, channelId, msg) => {
+  let guildId = msg.channel.guild.id;
+
+  let channel = client.guilds.find( guild => guild.id === guildId)
   .channels.find( channel => channel.id === channelId);
 
   currentChannel.send(`Channel name is #${channel.name}. Fetching messages now uwu`);
@@ -102,6 +104,8 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
+  console.log(msg);
+
   let loadCommand = 'bot, load ';
   let inspectCommand = 'bot, tell me about message number ';
 
@@ -115,7 +119,7 @@ client.on('message', msg => {
     const channelId = msg.content.substring(loadCommand.length)
 
     msg.reply('comin right up');
-    getMessages(msg.channel, channelId)
+    getMessages(msg.channel, channelId, msg)
   }
 
   if (msg.content.includes(inspectCommand)) {
