@@ -36,7 +36,7 @@ const insertReactions = (reactions) => {
   });
 }
 
-const getMessages =  (currentChannel, channelId) => {
+const getMessages = (currentChannel, channelId) => {
   let channel = client.guilds.find( guild => guild.name === '... :3')
   .channels.find( channel => channel.id === channelId);
 
@@ -44,6 +44,10 @@ const getMessages =  (currentChannel, channelId) => {
 
   fetchMessages(channel).then( result => {
     console.log("yeah");
+  })
+  .catch( error => {
+    console.log('oh noo')
+    console.log(error); 
   });
 
 }
@@ -61,6 +65,10 @@ const fetchMessages = (channel, lastMessage, iteration) => {
     request.before = lastMessage;
 
   return channel.fetchMessages(request).then( messages => {
+
+    if (messages.length === 0) {
+      return "Ok!";
+    }
 
     messageId = messages.last().id;
     messages.array().forEach(message => {
@@ -81,7 +89,7 @@ const fetchMessages = (channel, lastMessage, iteration) => {
     console.log(iteration, messageId);
 
     iteration++;
-    if (messages.length < 100 || iteration > 5) {
+    if (messages.length < 100) {
       return "Ok!";
     }
 
@@ -97,8 +105,15 @@ client.on('message', msg => {
   let loadCommand = 'bot, load ';
   let inspectCommand = 'bot, tell me about message number ';
 
+  const message = msg.content.toLowerCase();
+
+  if (message.includes('morning')) {
+
+  }
+
   if (msg.content.includes(loadCommand)) {
     const channelId = msg.content.substring(loadCommand.length)
+
     msg.reply('comin right up');
     getMessages(msg.channel, channelId)
   }
