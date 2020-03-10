@@ -8,7 +8,7 @@ database.connect((error) => {
     return;
   }
 
-  console.log('connected as id ' + database.threadId);
+
 });
 
 module.exports = database;

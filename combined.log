@@ -1,0 +1,2 @@
+{"level":"info","service":"user-service"}
+{"service":"user-service","level":"info","message":"huh"}

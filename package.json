@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.5.1",
-    "mysql": "^2.17.1"
+    "mysql": "^2.17.1",
+    "neo-blessed": "^0.2.0",
+    "winston": "^3.2.1"
   }
 }
