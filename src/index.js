@@ -33,10 +33,10 @@ const sendMessage = (channel, message) => {
 }
 
 const getMessage = (currentChannel, messageId) => {
-  console.log(`fetching ${messageId}`);
+  //console.log(`fetching ${messageId}`);
   currentChannel.fetchMessage(messageId).then( (message) => {
     currentChannel.send(`hmm... looks like some dumb shit posted by ${message.author.username}`);
-    console.log(message);
+    //console.log(message);
   })
 }
 
@@ -60,6 +60,18 @@ const insertReactions = (reactions) => {
   });
 }
 
+const downloadChannel = (channel) => {
+  log(`downloading channel ${channel.name}`)
+  fetchMessages(channel).then( result => {
+    //console.log("yeah");
+  })
+  .catch( error => {
+    //console.log('oh noo')
+    //console.log(error); 
+  });
+  log(`download complete!`);
+}
+
 const getMessages = (currentChannel, channelId, msg) => {
   let guildId = msg.channel.guild.id;
 
@@ -69,11 +81,11 @@ const getMessages = (currentChannel, channelId, msg) => {
   currentChannel.send(`Channel name is #${channel.name}. Fetching messages now uwu`);
 
   fetchMessages(channel).then( result => {
-    console.log("yeah");
+    //console.log("yeah");
   })
   .catch( error => {
-    console.log('oh noo')
-    console.log(error); 
+    //console.log('oh noo')
+    //console.log(error); 
   });
 
 }
@@ -112,7 +124,7 @@ const fetchMessages = (channel, lastMessage, iteration) => {
       }
     });
 
-    console.log(iteration, messageId);
+    //console.log(iteration, messageId);
 
     iteration++;
     if (messages.length < 100) {
@@ -148,7 +160,7 @@ client.on('ready', () => {
 });
 
 client.on('message', msg => {
-  console.log(msg);
+  //console.log(msg);
 
   let loadCommand = 'bot, load ';
   let inspectCommand = 'bot, tell me about message number ';
@@ -206,7 +218,7 @@ var serversBox = blessed.list({
   },
   style: {
     fg: 'white',
-    bg: 'black',
+    bg: 'black',  
     border: {
       fg: '#f0f0f0'
     },
@@ -274,12 +286,11 @@ var messageBox = blessed.textbox({
 });
 
 messageBox.on('submit', () => {
-  let serverId = parsedGuilds[serversBox.selected].id;
   let channelId = parsedGuilds[serversBox.selected].channels[channelsBox.selected].id;
-  logger.log('info', 'huh', client.guilds);
-  /*sendMessage(client.guilds[serverId].channels[channelId], messageBox.getValue());
+
+  sendMessage(client.channels.get(channelId), messageBox.getValue());
   messageBox.clearValue();
-  messageBox.unfocus();*/
+  //messageBox.unfocus();
 })
 
 screen.append(messageBox);
@@ -307,6 +318,11 @@ var actionsBox = blessed.list({
   }
 });
 screen.append(actionsBox);
+
+actionsBox.on('select', (selection) => {
+  if (actionsBox.selected === 0) 
+    downloadChannel(client.channels.get(getSelectedChannel().id));
+})
 
 var logBox = blessed.list({
   top: '40%',
@@ -352,3 +368,11 @@ const log = (text, color) => {
   logBox.setItems(logs);
 }
 // ui shit
+
+const getSelectedServer = () => {
+  return parsedGuilds[serversBox.selected];
+}
+
+const getSelectedChannel = () => {
+  return parsedGuilds[serversBox.selected].channels[channelsBox.selected];
+}
